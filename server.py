@@ -86,7 +86,7 @@ while True:
 
     elif command[:7] == "session":
         try:
-            num = int(command[7:])
+            num = int(command[8:])
             tarnum = targets[num]
             tarip = ips[num]
             shell(tarnum,tarip)

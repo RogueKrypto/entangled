@@ -1,15 +1,15 @@
 # Entangled v1.0
-==========================================================================<br/>
+========================================================== <br/>
 This is a very simple Remote administration tool for testing purposes only.<br/>
 Will work on windows or linux, but linux is the perferd current platform.<br/>
 
 
 Installation<br/>
-================================================================================<br/>
+========================================================== <br/>
 These are pyscripts that require python2. Please run scripts in python2 enviorments.
 
 Gettting Started <br/>
-========================================================= <br/>
+========================================================== <br/>
 
 usage on server:  <br/>
 python2.7 server.py <br/>
@@ -26,13 +26,13 @@ Entangle:  <br/>
 
 
 When a connection is made <br/> 
-======================================================================================== <br/> 
+========================================================== <br/> 
 Waiting for connections .... <br/>
 Entangle: **** 127.0.0.1 Has Connected **** <br/>
 
 
 List command = list all current sessions <br/> 
-=========================================== <br/>
+========================================================== <br/>
 Entangle: list <br/> 
 Session 0 ----> ('127.0.0.1', 52883) <br/> 
 Session 1 ----> ('192.168.159.133', 38308) <br/> 
@@ -40,24 +40,24 @@ Entangle:
 
 
 
-Session Command = select session
-=========================================================================================
-Entangle: list
-Session 0 ----> ('127.0.0.1', 52883)
-Session 1 ----> ('192.168.159.133', 38308)
-Entangle: session 0
-Session~# 
+Session Command = select session <br/>
+========================================================== <br/>
+Entangle: list <br/> 
+Session 0 ----> ('127.0.0.1', 52883) <br/> 
+Session 1 ----> ('192.168.159.133', 38308) <br/>
+Entangle: session 0 <br/>
+Session~#  <br/>
 
 
-Current commands with session:
-once connected you can run regular commands or use built in commands
+Current commands with session: <br/> 
+once connected you can run regular commands or use built in commands <br/>
 
-cd = change directory
-upload = upload file
-download = download file
-detach = detach current session
-quit = kill current session
+cd = change directory <br/> 
+upload = upload file <br/> 
+download = download file <br/> 
+detach = detach current session <br/> 
+quit = kill current session <br/>
 
-client
-====================================
-python2.7 client.py
+client <br/>
+==================================== <br/> 
+python2.7 client.py <br/> 

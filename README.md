@@ -1,41 +1,41 @@
 # Entangled v1.0
-====================================================
-This is a very simple Remote administration tool for testing purposes only.
-Will work on windows or linux, but linux is the perferd current platform.
+==========================================================================<br/>
+This is a very simple Remote administration tool for testing purposes only.<br/>
+Will work on windows or linux, but linux is the perferd current platform.<br/>
 
 
-Installation
-=======================================================
+Installation<br/>
+================================================================================<br/>
 These are pyscripts that require python2. Please run scripts in python2 enviorments.
 
-Gettting Started
-=========================================================
+Gettting Started <br/>
+========================================================= <br/>
 
-usage on server: 
-python2.7 server.py
+usage on server:  <br/>
+python2.7 server.py <br/>
 
-current commands with LP:
-list = list current sessions
-session = select sessopn
-exit = kill server
+current commands with LP: <br/> 
+list = list current sessions <br/> 
+session = select sessopn <br/>
+exit = kill server <br/> 
 
-Should display:
+Should display: <br/> 
 
-Waiting for connections ....
-Entangle: 
-
-
-When a connection is made
-========================================================================================
-Waiting for connections ....
-Entangle: **** 127.0.0.1 Has Connected ****
+Waiting for connections .... <br/> 
+Entangle:  <br/> 
 
 
-List command = list all current sessions
-===========================================
-Entangle: list
-Session 0 ----> ('127.0.0.1', 52883)
-Session 1 ----> ('192.168.159.133', 38308)
+When a connection is made <br/> 
+======================================================================================== <br/> 
+Waiting for connections .... <br/>
+Entangle: **** 127.0.0.1 Has Connected **** <br/>
+
+
+List command = list all current sessions <br/> 
+=========================================== <br/>
+Entangle: list <br/> 
+Session 0 ----> ('127.0.0.1', 52883) <br/> 
+Session 1 ----> ('192.168.159.133', 38308) <br/> 
 Entangle: 
 
 

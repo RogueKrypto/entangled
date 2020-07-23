@@ -128,12 +128,12 @@ if __name__ == "__main__":
 
         elif command[:7] == "session":  # switch between different sessions
             try:
-                session_number = int(command[8:])
-                target_number = targets[session_number]
-                target_ip = ips[session_number]
+                num = int(command[8:])
+                target_number = targets[num]
+                target_ip = ips[num]
                 shell(target_number, target_ip)
             except:
-                print("Session not %s Found!" % session_number)
+                print("Session not %s Found!" % num)
                 continue
         elif command == "exit":  # Close server
             for target in targets:

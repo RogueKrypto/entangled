@@ -93,7 +93,7 @@ def server():
     while True:
         if stop_threads:
             break
-        # s.settimeout(1) # if enabled , I get an error trying to run commands
+	s.settimeout(1) # if enabled ,I get an error trying to run commands, but this is needed for exit command...hmmm
         try:
             target, ip = s.accept()
             targets.append(target)
@@ -143,6 +143,10 @@ if __name__ == "__main__":
             except IndexError:
                 print("Session not %s Found!" % num)
                 continue
+	    except ValueError:
+	        print("Invalid input. Please enter a session number.")
+		continue
+	        
         elif command == "exit":  # Close server
             for target in targets:
                 target.close()

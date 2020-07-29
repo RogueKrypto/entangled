@@ -26,11 +26,11 @@ def shell(target, ip):
         try:
             json_data = json.dumps(data)
             target.send(json_data)
-	    
-	except socket.error:
-	    ("Connection Closed")
-	    pass
-	     
+
+        except socket.error:
+            ("Connection Closed")
+            pass
+
         except ValueError:
             pass
 
@@ -41,10 +41,10 @@ def shell(target, ip):
             try:
                 data = data + target.recv(1024)
                 return json.loads(data)
-		
-	    except KeyboardInterrupt:
-	        break
-		
+
+            except KeyboardInterrupt:
+                break
+
             except ValueError:
                 continue
 
@@ -59,7 +59,7 @@ def shell(target, ip):
                 break
 
             elif command_input == "quit":  # close connection
-	        target.close()
+                target.close()
                 targets.remove(target)
                 ips.remove(ip)
                 break
@@ -92,20 +92,19 @@ def shell(target, ip):
             else:
                 result = receive()
                 print(result)
-		
-	except KeyboardInterrupt:
-	    pass
-	
+
+        except KeyboardInterrupt:
+            pass
 
 
 def server():
     """Managing the Server"""
-    global clients
+    #global clients
     now = datetime.datetime.now()
     while True:
         if stop_threads:
             break
-	s.settimeout(1) # this is needed for exit command..
+        s.settimeout(1)  # this is needed for exit command..
         try:
             target, ip = s.accept()
             targets.append(target)
@@ -113,7 +112,7 @@ def server():
             print ("Connection from: IP: " + ip[0] + now.strftime(" was established. Time of connection was: %Y-%m-%d "
                                                                   "%H:%M:%S"))
             # print(str(ips[clients]) + " Has Connected!")
-            clients += 1
+            #clients += 1
         except:
             pass
 
@@ -144,7 +143,7 @@ if __name__ == "__main__":
             if command == "list":  # show a list of all active connections
                 for index, ip in enumerate(ips):
                     print ("Session %s: %s" % (index, ip[0]))
-    
+
             elif command[:7] == "session":  # switch between different sessions
                 try:
                     num = int(command[8:])
@@ -154,10 +153,10 @@ if __name__ == "__main__":
                 except IndexError:
                     print("Session not %s Found!" % num)
                     continue
-	        except ValueError:
-	            print("Invalid input. Please enter a session number.")
-		    continue
-	            
+                except ValueError:
+                    print("Invalid input. Please enter a session number.")
+                    continue
+
             elif command == "exit":  # Close server
                 for target in targets:
                     target.close()
@@ -165,6 +164,6 @@ if __name__ == "__main__":
                 stop_threads = True
                 t1.join()
                 break
-		
-	except KeyboardInterrupt:
-	    pass
+
+        except KeyboardInterrupt:
+            pass
